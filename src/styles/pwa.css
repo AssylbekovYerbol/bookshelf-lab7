@@ -1,0 +1,614 @@
+/* Lab 7: PWA UI (connection status, banners, update prompt, offline page) and the mobile adaptation (320px and up). */
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+img,
+svg {
+  max-width: 100%;
+}
+
+main.container,
+.panel,
+.card__body {
+  min-width: 0;
+}
+
+/* Notches / rounded corners in standalone mode and landscape. */
+.container {
+  padding-left: max(16px, env(safe-area-inset-left));
+  padding-right: max(16px, env(safe-area-inset-right));
+}
+
+.header {
+  padding-top: env(safe-area-inset-top);
+}
+
+.footer {
+  padding-bottom: calc(18px + env(safe-area-inset-bottom));
+}
+
+/* ---------- connection pill ---------- */
+.conn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.conn__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.conn--online {
+  background: #dcf3e4;
+  color: #1b6b3a;
+}
+
+.conn--offline {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.conn--offline .conn__dot {
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* ---------- banners ---------- */
+.banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding: 10px max(16px, env(safe-area-inset-left));
+  font-size: 0.92rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.banner--warn {
+  background: #fff4e5;
+  color: var(--warn);
+}
+
+.banner--info {
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+}
+
+.banner p {
+  flex: 1 1 260px;
+}
+
+.banner__btn {
+  background: #fff;
+}
+
+/* ---------- update / offline-ready prompt ---------- */
+.sw-prompt {
+  position: fixed;
+  left: 50%;
+  bottom: calc(12px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  z-index: 30;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+  width: calc(100% - 24px);
+  max-width: 520px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--ink);
+  color: #fff;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3);
+}
+
+.sw-prompt__text {
+  flex: 1 1 200px;
+  font-weight: 600;
+}
+
+.sw-prompt__actions {
+  display: flex;
+  gap: 8px;
+}
+
+.sw-prompt .btn--ghost {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.sw-prompt .btn--ghost:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+body:has(.sw-prompt) .toast {
+  bottom: 120px;
+}
+
+.toast {
+  bottom: calc(20px + env(safe-area-inset-bottom));
+}
+
+/* ---------- offline page ---------- */
+.offline {
+  display: grid;
+  place-items: center;
+  padding: 24px 0;
+}
+
+.offline__card {
+  width: 100%;
+  max-width: 480px;
+  text-align: center;
+  padding: 32px 22px;
+}
+
+.offline__icon {
+  font-size: 3.2rem;
+  line-height: 1;
+}
+
+.offline__title {
+  margin: 12px 0 8px;
+  font-size: 1.6rem;
+}
+
+.offline__text {
+  margin-bottom: 20px;
+  color: var(--muted);
+}
+
+.offline__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.offline__status {
+  margin-top: 16px;
+  min-height: 1.4em;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+/* ---------- responsive navigation ---------- */
+.nav-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  cursor: pointer;
+}
+
+.nav-toggle:focus-visible {
+  outline: 3px solid rgba(15, 118, 110, 0.4);
+  outline-offset: 2px;
+}
+
+.nav-toggle__bars,
+.nav-toggle__bars::before,
+.nav-toggle__bars::after {
+  display: block;
+  width: 20px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--ink);
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+.nav-toggle__bars {
+  position: relative;
+}
+
+.nav-toggle__bars::before,
+.nav-toggle__bars::after {
+  content: '';
+  position: absolute;
+  left: 0;
+}
+
+.nav-toggle__bars::before {
+  top: -6px;
+}
+
+.nav-toggle__bars::after {
+  top: 6px;
+}
+
+.nav-toggle[aria-expanded='true'] .nav-toggle__bars {
+  background: transparent;
+}
+
+.nav-toggle[aria-expanded='true'] .nav-toggle__bars::before {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.nav-toggle[aria-expanded='true'] .nav-toggle__bars::after {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+/* Mobile: the menu is a collapsible block under the header row. */
+.menu {
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  order: 4;
+  padding-bottom: 8px;
+}
+
+.menu.is-open {
+  display: flex;
+  max-height: calc(100vh - 90px - env(safe-area-inset-top));
+  overflow-y: auto;
+}
+
+.menu .nav {
+  flex-direction: column;
+  order: 0;
+  width: 100%;
+  margin: 0;
+}
+
+.menu .nav__link {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 14px;
+  border-radius: 10px;
+}
+
+.menu .nav__account {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  margin: 0;
+}
+
+.menu .nav__account .btn {
+  width: 100%;
+}
+
+.menu .nav__placeholder {
+  width: 100%;
+}
+
+@media (min-width: 800px) {
+  .nav-toggle {
+    display: none;
+  }
+
+  .menu,
+  .menu.is-open {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: auto;
+    order: 2;
+    padding-bottom: 0;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .menu .nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: auto;
+  }
+
+  .menu .nav__link {
+    display: inline-block;
+    min-height: 0;
+    padding: 7px 12px;
+    border-radius: 999px;
+  }
+
+  .menu .nav__account {
+    flex-direction: row;
+    align-items: center;
+    margin-left: auto;
+  }
+
+  .menu .nav__account .btn {
+    width: auto;
+  }
+
+  .conn {
+    order: 3;
+    margin-left: 0;
+  }
+}
+
+/* ---------- touch-friendly controls ---------- */
+@media (pointer: coarse), (max-width: 799px) {
+  .btn {
+    min-height: 44px;
+    padding: 10px 18px;
+  }
+
+  .input,
+  select.input {
+    min-height: 44px;
+    font-size: 16px; /* prevents the iOS zoom on focus */
+  }
+
+  textarea.input {
+    min-height: 96px;
+  }
+
+  .page-btn {
+    min-width: 44px;
+    height: 44px;
+  }
+
+  .fav-btn {
+    width: 44px;
+    height: 44px;
+    top: 2px;
+    right: 2px;
+    font-size: 1.3rem;
+  }
+
+  .card__body {
+    padding-right: 40px;
+  }
+
+  .checkbox {
+    min-height: 44px;
+    padding-bottom: 0;
+  }
+
+  .checkbox input {
+    width: 22px;
+    height: 22px;
+  }
+
+  .search__clear {
+    width: 36px;
+    height: 36px;
+  }
+
+  .link-button {
+    padding: 4px 0;
+  }
+
+  .related__item {
+    min-height: 56px;
+  }
+
+  .toast__close {
+    min-width: 36px;
+    min-height: 36px;
+  }
+}
+
+/* ---------- narrow screens (320px and up) ---------- */
+@media (max-width: 639px) {
+  main.container {
+    padding-top: 16px;
+  }
+
+  .toolbar__title {
+    font-size: 1.3rem;
+  }
+
+  .toolbar__actions {
+    width: 100%;
+  }
+
+  .toolbar__actions .btn {
+    flex: 1 1 130px;
+  }
+
+  .results-bar__sort {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .panel {
+    padding: 14px;
+  }
+
+  .controls {
+    padding: 14px;
+  }
+
+  .form__actions .btn,
+  .detail__actions .btn,
+  .detail__actions .field {
+    flex: 1 1 140px;
+  }
+
+  .detail__title {
+    font-size: 1.35rem;
+  }
+
+  .detail__main {
+    gap: 16px;
+  }
+
+  .detail__nav .btn {
+    flex: 1 1 120px;
+  }
+
+  .auth__card,
+  .profile__card {
+    padding: 20px 16px;
+  }
+
+  .hero__actions .btn {
+    flex: 1 1 140px;
+  }
+
+  .stat__value {
+    font-size: 1.4rem;
+  }
+
+  .bars__row {
+    grid-template-columns: 84px 1fr auto;
+    gap: 8px;
+  }
+
+  .bars__label {
+    overflow-wrap: anywhere;
+    font-size: 0.85rem;
+  }
+
+  .pagination {
+    gap: 6px;
+  }
+
+  .pagination > .btn {
+    flex: 1 1 100px;
+  }
+
+  .pagination__list {
+    order: 3;
+    width: 100%;
+  }
+
+  /* Routes table (About) becomes a list of stacked rows instead of scrolling sideways. */
+  .routes-table,
+  .routes-table tbody,
+  .routes-table tr,
+  .routes-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .routes-table thead {
+    display: none;
+  }
+
+  .routes-table tr {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .routes-table td {
+    padding: 2px 0;
+    border: 0;
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 399px) {
+  .filters,
+  .facts {
+    grid-template-columns: 1fr;
+  }
+
+  .stats {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .stat__label {
+    font-size: 0.7rem;
+  }
+
+  .header__title {
+    font-size: 1.15rem;
+  }
+
+  .header__logo {
+    width: 38px;
+    height: 38px;
+    font-size: 20px;
+  }
+
+  .conn__label {
+    display: none; /* the coloured dot stays; the text is announced to screen readers via aria-live */
+  }
+
+  .conn {
+    padding: 8px;
+  }
+
+  .cover--lg {
+    width: 140px;
+    height: 202px;
+  }
+}
+
+/* ---------- landscape phones: little vertical space ---------- */
+@media (max-height: 500px) and (orientation: landscape) {
+  .header {
+    position: static;
+  }
+
+  .header__inner {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  main.container {
+    padding-top: 12px;
+    padding-bottom: 24px;
+  }
+
+  .menu.is-open {
+    max-height: 60vh;
+  }
+
+  .hero {
+    gap: 16px;
+  }
+
+  .hero__image {
+    max-height: 40vh;
+    object-fit: contain;
+  }
+
+  .state,
+  .offline__card {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+
+  .sw-prompt {
+    padding: 10px 14px;
+  }
+}
+
+@media (max-width: 799px) and (min-width: 560px) and (orientation: landscape) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .conn--offline .conn__dot,
+  .nav-toggle__bars,
+  .nav-toggle__bars::before,
+  .nav-toggle__bars::after {
+    animation: none;
+    transition: none;
+  }
+}
